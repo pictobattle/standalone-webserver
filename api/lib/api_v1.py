@@ -8,7 +8,7 @@ from v1.user import user
 # Static variables
 API_VERSION = 'v1'
 PREFIX = '/' + API_VERSION
-MONGO_CONFIG = {'host': 'localhost', 'post': 27017}
+MONGO_CONFIG = {'host': 'localhost', 'port': 27017}
 
 
 class APIv1(object):

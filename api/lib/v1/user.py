@@ -1,6 +1,7 @@
-from flask import Blueprint, request
+from flask import request
+from extraBlueprint import ExtraBlueprint
 
-user = Blueprint('user', __name__)
+user = ExtraBlueprint('user', __name__)
 
 
 # Routes:

@@ -1,6 +1,7 @@
-from flask import Blueprint, request
+from flask import request
+from extraBlueprint import ExtraBlueprint
 
-profile = Blueprint('profile', __name__)
+profile = ExtraBlueprint('profile', __name__)
 
 
 # Non-route functions:

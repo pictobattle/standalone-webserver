@@ -1,19 +1,24 @@
-from flask import Blueprint, request, abort
+from flask import request, abort
+from extraBlueprint import ExtraBlueprint
 
-post = Blueprint('post', __name__)
+post = ExtraBlueprint('post', __name__)
 
 
 # Non-route functions:
-def get(postID):
-    return "Get post number {0}!".format(postID)
+def get(**kwargs):
+    return("MongoClient: {0} \n".format(str(post.mongoClient)) +
+           "From user {0}, get post number {1}!"
+           .format(kwargs['userID'], kwargs['postID']))
 
 
-def update(postID):
-    return "Update post number {0}!".format(postID)
+def update(**kwargs):
+    return "From user {0}, update post number {1}!".format(kwargs['userID'],
+                                                           kwargs['postID'])
 
 
-def delete(postID):
-    return "Delete post number {0}!".format(postID)
+def delete(**kwargs):
+    return "From user {0}, delete post number {1}!".format(kwargs['userID'],
+                                                           kwargs['postID'])
 
 
 # Routes:
@@ -22,13 +27,13 @@ def create():
     return str(request.get_json())
 
 
-@post.route('/<postID>/', methods=['GET', 'PUT', 'DELETE'])
-def postRequestHandler(postID):
+@post.route('/<userID>/<postID>/', methods=['GET', 'PUT', 'DELETE'])
+def postRequestHandler(*args, **kwargs):
     if request.method == 'GET':
-        return get(postID)
+        return get(*args, **kwargs)
     elif request.method == 'PUT':
-        return update(postID)
+        return update(*args, **kwargs)
     elif request.method == 'DELETE':
-        return delete(postID)
+        return delete(*args, **kwargs)
     else:
         abort(500)

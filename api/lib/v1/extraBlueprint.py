@@ -7,10 +7,8 @@ class ExtraBlueprint(Blueprint):
     def __init__(self, *args, **kwargs):
         super(ExtraBlueprint, self).__init__(*args, **kwargs)
 
-    def setMongoClient(self, mongoClient):
-        self.mongoClient = mongoClient
+    def register(self, app, options, first_registration=False):
+        ''' This executes on Flask.register_blueprint() '''
+        self.mongoClient = app.config.get('MONGO_CLIENTv1')
 
-    def mongoClientExists(self):
-        if self.mongoClient is not None:
-            return True
-        return False
+        super(ExtraBlueprint, self).register(app, options, first_registration)

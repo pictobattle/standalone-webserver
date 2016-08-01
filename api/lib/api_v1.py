@@ -8,23 +8,16 @@ from v1.user import user
 # Static variables
 API_VERSION = 'v1'
 PREFIX = '/' + API_VERSION
-MONGO_CLIENT = MongoClient()
-
-
-def setUpEB(eBlueprint):
-    ''' Setup ExtraBlueprints '''
-    eBlueprint.setMongoClient(MONGO_CLIENT)
 
 
 class APIv1(object):
     def __init__(self, app):
-        setUpEB(post)
+        app.config['MONGO_CLIENTv1'] = MongoClient()
+
         app.register_blueprint(post, url_prefix=PREFIX + '/post')
 
-        setUpEB(profile)
         app.register_blueprint(profile, url_prefix=PREFIX + '/profile')
 
-        setUpEB(user)
         app.register_blueprint(user, url_prefix=PREFIX + '/user')
 
         @app.route(PREFIX + '/')

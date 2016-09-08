@@ -1,27 +1,37 @@
+"""The APIv1 module."""
+from flask_restful import Api
+from flask import Blueprint
 from pymongo import MongoClient
 
-# Blueprint imports
-from v1.post import post
-from v1.profile import profile
-from v1.user import user
+# Resource imports
+from v1.resources import profile, post, user  # , user, post
 
 # Static variables
-API_VERSION = 'v1'
-PREFIX = '/' + API_VERSION
-MONGO_CONFIG = {'host': 'localhost', 'port': 27017}
+EXTRA_RESOURCE_KWARGS = {'mongoClient': MongoClient(host='localhost',
+                                                    port=27017)}
+
+# App setup:
+apiBlueprint = Blueprint('api_v1', __name__)
+api = Api(apiBlueprint)
 
 
-class APIv1(object):
-    def __init__(self, app):
-        app.config['MONGO_CLIENTv1'] = MongoClient(MONGO_CONFIG['host'],
-                                                   MONGO_CONFIG['port'])
+# User:
+api.add_resource(user.LogIn, '/user/logIn/',
+                 resource_class_kwargs=EXTRA_RESOURCE_KWARGS)
+api.add_resource(user.SignUp, '/user/signUp/',
+                 resource_class_kwargs=EXTRA_RESOURCE_KWARGS)
 
-        app.register_blueprint(post, url_prefix=PREFIX + '/post')
 
-        app.register_blueprint(profile, url_prefix=PREFIX + '/profile')
+# Profile:
+api.add_resource(profile.Profile, '/profile/', '/profile/<int:profileID>/',
+                 resource_class_kwargs=EXTRA_RESOURCE_KWARGS)
+api.add_resource(profile.ProfileTransfer, '/profile/<int:profileID>/transfer/',
+                 resource_class_kwargs=EXTRA_RESOURCE_KWARGS)
 
-        app.register_blueprint(user, url_prefix=PREFIX + '/user')
 
-        @app.route(PREFIX + '/')
-        def hello():
-            return "API v1 says Hello World!"
+# Post:
+api.add_resource(post.NewPost, '/post/',
+                 resource_class_kwargs=EXTRA_RESOURCE_KWARGS)
+api.add_resource(post.CreatedPost, '/post/<string:postID>/',
+                 '/post/<string:userID>/<int:postID>/',
+                 resource_class_kwargs=EXTRA_RESOURCE_KWARGS)
